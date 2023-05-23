@@ -28,7 +28,7 @@ int MAXLEVEL = 9;
 #define SIGMA0 (1.0/(Re*Ca))
 #define SIGMAT (1.0/(Re))
 
-double tmax = 6.;
+double tmax = 3.;
 double tsnap = 0.010;
 double DTMAX = 0.00005;
 
@@ -56,7 +56,7 @@ int main(){
   rho2=1.;
   L0=Ldomain;
   origin(0.0,0.0);
-  for(MAXLEVEL = 7; MAXLEVEL <= 7; MAXLEVEL++){
+  for(MAXLEVEL = 9; MAXLEVEL <= 10; MAXLEVEL++){
     N=1<<MAXLEVEL;
     run();
     //    system("gnuplot plots");
@@ -71,8 +71,9 @@ event init(i=0){
     fraction(f,sq(R0)-(Drop(x,y)));
     foreach(){
       sigma[] = SIGMA0 + SIGMAT*x;
+      d[] = sqrt(sq(x-centerx) + sq(y)) - 1;
     }
-    boundary({sigma});
+    boundary((scalar *){sigma,d});
   }
   dump("init");
 }
