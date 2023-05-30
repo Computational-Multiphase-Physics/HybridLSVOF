@@ -6,6 +6,7 @@
 #include "two-phase.h"
 #include "navier-stokes/conserving.h"
 #include "tension-hybrid.h"
+//#include "view.h"
 
 int MAXLEVEL = 9;
 #define MINLEVEL (MAXLEVEL-4)
@@ -28,7 +29,7 @@ int MAXLEVEL = 9;
 #define SIGMA0 (1.0/(Re*Ca))
 #define SIGMAT (1.0/(Re))
 
-double tmax = 3.;
+double tmax = 4.;
 double tsnap = 0.010;
 double DTMAX = 0.00005;
 
@@ -56,7 +57,7 @@ int main(){
   rho2=1.;
   L0=Ldomain;
   origin(0.0,0.0);
-  for(MAXLEVEL = 9; MAXLEVEL <= 10; MAXLEVEL++){
+  for(MAXLEVEL = 8; MAXLEVEL <= 8; MAXLEVEL++){
     N=1<<MAXLEVEL;
     run();
     //    system("gnuplot plots");
@@ -105,6 +106,36 @@ event logWriting (i++) {
   }
 }
 
+event movie (t += tmax/90){
+  
+  char dumpname[80];
+  sprintf(dumpname,"dump-%d-%2.2f",MAXLEVEL,t);
+  dump(dumpname);
+
+  /* scalar sig[]; */
+  /* foreach() */
+  /*   sig[] = sigma[]; */
+  
+  /* char s[80]; */
+  /* sprintf (s, "t = %.2f", t); */
+  /* clear(); */
+  /* view(fov = 4., ty = -0.5, quat = {0,0,-cos(pi/4.),cos(pi/4.)}, width = 1980, height = 1980); */
+  /* draw_vof("f",lw=4); */
+  /* squares("sig", min = SIGMA0+SIGMAT*6., max = SIGMA0+SIGMAT*9., linear=true, map = cool_warm); */
+  /* vectors("u",0.04,lc = {0,0,0}, lw = 4); */
+  /* mirror({0,1}) { */
+  /*   draw_vof("f",lw=4); */
+  /*   squares("sig", min = SIGMA0+SIGMAT*6., max = SIGMA0+SIGMAT*9., linear=true, map = cool_warm); */
+  /*   vectors("u",0.05,lc = {0,0,0}, lw = 4); */
+  /*   draw_string (s, pos = 1, size = 30, lc = {255,255,255}, lw = 4); */
+  /*   /\* draw_string ("HOT", pos = 2, size = 30, lc = {0,0,0}, lw = 4); *\/ */
+  /*   /\* draw_string ("COLD", pos = 4, size = 30, lc = {0,0,0}, lw = 4); *\/ */
+  /* } */
+  /* char filename[60]; */
+  /* sprintf(filename,"bubble-%d.mp4",MAXLEVEL); */
+  /* save(filename); */
+}
+
 event end (t = tmax){
   /* FILE * fp1; */
   /* char nameGrad[80]; */
@@ -119,10 +150,6 @@ event end (t = tmax){
   /*     fclose(fp1); */
   /*   } */
   /* } */
-
-  char dumpname[80];
-  sprintf(dumpname,"dump-%d",MAXLEVEL);
-  dump(dumpname);
   
   char namefacet[80];
   sprintf (namefacet, "facet-%d-%d.dat",pid(),MAXLEVEL);

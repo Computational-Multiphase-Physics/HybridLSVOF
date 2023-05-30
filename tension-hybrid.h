@@ -15,6 +15,7 @@ void vof2distCC(scalar c){
 
   foreach(){
     int num = 0;
+    d[] = 0.;
     for(int ii = 0; ii <= 1; ii++)
       for(int jj = 0; jj <= 1; jj++){
 	if(fabs(ls[ii,jj]) < L0){
@@ -68,7 +69,7 @@ static inline double curvatureLS (Point point, scalar d) {
 
 #if AXI
   double r = y;
-	curv += dy*(dy*dy + dx*dx)/r / cube(dn);
+  curv += dy*(dy*dy + dx*dx)/r / cube(dn);
 #endif
 
 #if (AXI || dimension == 3) // !AXI
@@ -93,10 +94,14 @@ static inline double curvatureLS (Point point, scalar d) {
 
 event properties(i++){
   vof2distCC(f);
+  curvature(f, kappa);
+  boundary ({kappa,d});
+
   foreach(){
-    kappa[] = curvatureLS (point, d); // I am opposite to curvature fn of basilisk
+    if(kappa[] >= nodata)
+      kappa[] = curvatureLS (point, d); // Not true, why did i say earlier that "I am opposite to curvature fn of basilisk"
   }
-  boundary ((scalar *){kappa,d});
+  boundary ((scalar *){kappa});
 }
 
 event acceleration (i++)
@@ -164,7 +169,7 @@ event acceleration (i++)
 
     foreach_face()
     {
-      if(kappa[] < nodata)
+      if(fabs(kappa[]) < nodata)
 	ia.x[] += alpha.x[] / fm.x[] * (diag.x[] - diag.x[-1] + off_diag.y[0, 1] - off_diag.y[]) / Delta;
     }
   boundary((scalar *){ia});

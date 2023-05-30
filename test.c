@@ -1,15 +1,19 @@
 #include "utils.h"
 #include "navier-stokes/centered.h"
+
+scalar f[];
+
 #include "fractions.h"
-#include "tension-hybridV2.h"
+#include "tension-hybrid.h"
+#include "curvature.h"
 
 #define sq(x) ((x)*(x))
 
-scalar f[];
 
 #define Drop(x,y) (sq(x - 1.) + sq(y))
 
 scalar kappa[],sigma[];
+scalar kappaf[];
 vector off_diag[];
 vector diag[];
 vector diagact[];
@@ -23,19 +27,18 @@ int main(){
   L0 = 2;
   fraction(f,sq(0.75)-(Drop(x,y)));
 
-  /* vof2distCC(f); */
-
-  foreach(){
-    dact[] = sq(0.75)-(Drop(x,y));
-    d[] = sq(0.75)-(Drop(x,y));
-
-  }
-  
+  vof2distCC(f);
+  curvature(f,kappaf);
   /* foreach(){ */
-  /*   kappa[] = curvatureLS (point, d); // I am opposite to curvature fn of basilisk */
-  /*   sigma[] = 1. + x; */
+  /*   dact[] = sq(0.75)-(Drop(x,y)); */
+  /*   d[] = sq(0.75)-(Drop(x,y)); */
   /* } */
-  /* boundary ((scalar *){kappa,sigma}); */
+  
+  foreach(){
+    kappa[] = curvatureLS (point, d); // I am opposite to curvature fn of basilisk
+    sigma[] = 1. + x;
+  }
+  boundary ((scalar *){kappa,sigma});
   
   foreach ()
     {

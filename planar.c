@@ -43,7 +43,7 @@ int main(){
 
   periodic(right);
   TOLERANCE = 1e-6;
-  for(MAXLEVEL = 7; MAXLEVEL <=8; MAXLEVEL++){
+  for(MAXLEVEL = 7; MAXLEVEL <=9; MAXLEVEL++){
   init_grid(1<<MAXLEVEL);
   run();
   }
