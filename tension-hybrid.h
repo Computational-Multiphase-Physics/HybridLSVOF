@@ -138,7 +138,8 @@ event acceleration (i++)
 					    + k * xi * (d[0, -1] - 2.0 * d[] + d[0, 1]));
 		double ka = kappa[];
 		double sigmaxi = sigma[] + xi * (sigma[k] - sigma[]);
-		diag.x[] += sigmaxi * fabs(tan) / Delta - sign(phi_c) * ka * (0.5 - xi);
+		diag.x[] += sigmaxi * (fabs(tan) / Delta - sign(phi_c) * ka * (0.5 - xi));
+
 	      }
 	  }
 	}
