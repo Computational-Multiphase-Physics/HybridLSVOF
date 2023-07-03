@@ -3,7 +3,7 @@
 #include "navier-stokes/conserving.h"
 #include "curvature.h"
 #include "thermal.h"
-#include "tension-hybrid.h"
+#include "tension-hybridV3.h"
 //#include "view.h"
 //#include "vtkdaniel.h"
 
@@ -43,7 +43,7 @@ int main(){
 
   periodic(right);
   TOLERANCE = 1e-6;
-  for(MAXLEVEL = 7; MAXLEVEL <=9; MAXLEVEL++){
+  for(MAXLEVEL = 7; MAXLEVEL <=8; MAXLEVEL++){
   init_grid(1<<MAXLEVEL);
   run();
   }
@@ -58,10 +58,10 @@ event defaults (i = 0) {
   }
 }
 
-event init (i++){
+event init (i=0){
   mask (y > 1. ? top : none);
 
-  fraction(f,(y-((double)L0)/((double)N)/2.));
+  fraction(f,(y-((double)L0)/((double)N)/4.));
 
   foreach(){
     sigma[] = sigma0 + sigmaT*(T[] - 1.);
