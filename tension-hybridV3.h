@@ -79,11 +79,11 @@ static inline double curvatureLS (Point point, scalar d) {
 
 event properties(i++){
   vof2distCC(f);
-  //  curvature(f, kappa);
+  curvature(f, kappa);
   boundary ({kappa,d});
 
   foreach(){
-    if(kappa[] >= nodata)
+    if(kappa[] == nodata && fabs(d[]) != nodata)
       kappa[] = curvatureLS (point, d); // Not true, why did i say earlier that "I am opposite to curvature fn of basilisk"
   }
   boundary ((scalar *){kappa});
@@ -102,7 +102,7 @@ event acceleration (i++)
 	    double xi = d[]/(d[] - d[i] + SEPS);
 	    double nx = ((d[1] - d[-1])/2. +
 			 xi*i*(d[-1] - 2.*d[] + d[1]))/Delta;
-  	    double ki = kappa[];
+  	    double ki = kappa[];// + xi*(kappa[i] - kappa[]);
 	    double sigmaxi = sigma[] + xi * (sigma[i] - sigma[]);
 	    S.y.y[] += sigmaxi*(fabs(nx)/Delta - sign(d[])*ki*(0.5 - xi));
   	  }
@@ -110,7 +110,7 @@ event acceleration (i++)
       }
     }
   }
-    
+  
   boundary({S.x.x,S.y.y});
 
   foreach_vertex(){
@@ -133,9 +133,11 @@ event acceleration (i++)
   
   face vector ia = a;
   foreach_face(){
-    if(fabs(kappa[]) < nodata)
+    if(fabs(kappa[]) < nodata){
       ia.x[] += alpha.x[] / fm.x[] * (S.x.x[] - S.x.x[-1] + S.x.y[0,1] - S.x.y[]) / Delta;
+    }
   }
+
   boundary((scalar *){ia});
 }
 
